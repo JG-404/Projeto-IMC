@@ -4,14 +4,14 @@ on:
   push:
 
 jobs:
-  node:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: baixando o codigo
         uses: actions/checkout@v4
 
-      - name: configurando o nome
+      - name: configurando o node
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -32,14 +32,14 @@ jobs:
         working-directory: API
         run: npm test
 
-  executar_api_e_app:
-    needs: node
+  cd:
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - name: baixando o codigo
         uses: actions/checkout@v4
 
-      - name: configurando o nome
+      - name: configurando o node
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -71,9 +71,9 @@ jobs:
         working-directory: E2E
         run: npm test
       
-      - name: Salvar as prints do E2E
+      - name: prints do E2E
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-e2e
+          name: screenshots
           path: E2E/screenshots/
