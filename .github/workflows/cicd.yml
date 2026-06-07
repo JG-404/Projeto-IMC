@@ -1,0 +1,79 @@
+name: Projeto IMC CI/CD
+
+on:
+  push:
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: baixando o codigo
+        uses: actions/checkout@v4
+
+      - name: configurando o nome
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: dependências da API
+        working-directory: API
+        run: npm install
+
+      - name: dependências da APP
+        working-directory: APP
+        run: npm install
+
+      - name: dependências do E2E
+        working-directory: E2E
+        run: npm install
+
+      - name: testes unitários
+        working-directory: API
+        run: npm test
+
+  executar_api_e_app:
+    needs: node
+    runs-on: ubuntu-latest
+    steps:
+      - name: baixando o codigo
+        uses: actions/checkout@v4
+
+      - name: configurando o nome
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: dependências da API
+        working-directory: API
+        run: npm install
+
+      - name: dependências da APP
+        working-directory: APP
+        run: npm install
+
+      - name: dependências do E2E
+        working-directory: E2E
+        run: npm install
+    
+      - name: API start
+        working-directory: API
+        run: npm start &
+      
+      - name: APP start
+        working-directory: APP
+        run: npm start &
+
+      - name: servidores iniciando
+        run: sleep 15
+
+      - name: testes E2E
+        working-directory: E2E
+        run: npm test
+      
+      - name: Salvar as prints do E2E
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-e2e
+          path: E2E/screenshots/

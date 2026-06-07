@@ -24,10 +24,16 @@ app.post('/imc', (req,res) => {
 
         const imc = peso / (altura ** 2)
 
-        res.status(200).json({resultado: imc})
+        res.status(200).json({
+            success: true,
+            resultado: imc
+        })
     }
     catch(err){
-        res.status(406).json({erro: err})
+        res.status(406).json({
+            success: false,
+            erro: err.message
+        })
     }
 })
 
